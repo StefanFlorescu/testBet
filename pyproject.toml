@@ -1,0 +1,26 @@
+[project]
+name = "testbet"
+version = "0.1.0"
+description = "Test Home Assignement for 'QA Automation Engineer' position"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "pydantic>=2.11.7",
+    "pydantic-settings>=2.10.1",
+    "pytest>=9.1.1",
+    "pytest-check>=2.5.3",
+    "python-dotenv>=1.1.1",
+    "requests>=2.34.2",
+    "schemathesis>=4.28.0",
+]
+
+[tool.pytest.ini_options]
+#addopts = "-x"
+markers = [
+    "api: tests that exercise API behavior",
+    "matches: tests matching the current test selection",
+    "health: test for checking the state of the service",
+    "access: check for the unauthorised API access",
+    "schema: API response schema validation"
+
+]
