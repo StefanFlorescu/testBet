@@ -7,9 +7,20 @@ from urllib.parse import quote
 import pytest
 import requests
 
-from src.client import ApiClient
+from src.api.client import ApiClient
 from src.config import settings
 from src.logger import configure_logging
+
+
+def pytest_addoption(parser: pytest.Parser) -> None:
+    """Register command-line options shared by the test suite."""
+
+    parser.addoption(
+        "--headed",
+        action="store_true",
+        default=False,
+        help="Run UI tests with a visible Chrome window.",
+    )
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -22,7 +33,7 @@ def configure_test_logging() -> None:
 def server_availability() -> None:
     """Verify that the web application is reachable before running tests."""
     try:
-        response = requests.get(str(settings.web_base_url), timeout=5)
+        response = requests.get(settings.web_base_url.encoded_string(), timeout=10)
         response.raise_for_status()
     except requests.RequestException as e:
         pytest.exit(f"Web application is not reachable: {e}")
@@ -55,7 +66,6 @@ def valid_random_stakes() -> Callable[[], float]:
             int((upper_limit - lower_limit) / step_size) + 1
         )
     ]
-
     return lambda: random.choice(stakes)
 
 

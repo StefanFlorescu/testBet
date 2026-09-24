@@ -9,9 +9,12 @@ dependencies = [
     "pydantic-settings>=2.10.1",
     "pytest>=9.1.1",
     "pytest-check>=2.5.3",
+    "pytest-html>=4.2.0",
+    "pytest-selenium>=4.1.0",
     "python-dotenv>=1.1.1",
     "requests>=2.34.2",
     "schemathesis>=4.28.0",
+    "selenium>=4.30.0",
 ]
 
 [tool.pytest.ini_options]
@@ -23,6 +26,8 @@ markers = [
     "bets: tests for the place-bet endpoint",
     "health: test for checking the state of the service",
     "access: check for the unauthorised API access",
-    "schema: API response schema validation"
+    "schema: API response schema validation",
+    "ui: tests that exercise the web application through a browser",
+    "demo: demonstration tests for local UI debugging"
 
 ]

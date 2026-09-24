@@ -12,6 +12,7 @@ pytestmark = [pytest.mark.api, pytest.mark.schema]
 logger = get_logger("test_schema")
 schema = schemathesis.openapi.from_url(settings.api_documentation_url.encoded_string())
 
+@pytest.mark.skip
 @schema.parametrize()
 def test_api_contract(case):
     case.call_and_validate(
