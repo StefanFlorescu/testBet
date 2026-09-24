@@ -56,6 +56,8 @@ class ApiClient:
             url,
             response.status_code,
         )
+        self.logger.debug("Request headers: %s", response.request.headers)
+        self.logger.debug("Request body: %s", response.request.body)
         self.logger.debug("Response headers: %s", response.headers)
         self.logger.debug("Response body: %s", response.text)
         return response

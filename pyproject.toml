@@ -19,6 +19,8 @@ dependencies = [
 markers = [
     "api: tests that exercise API behavior",
     "matches: tests matching the current test selection",
+    "balance: tests for the balance endpoint",
+    "bets: tests for the place-bet endpoint",
     "health: test for checking the state of the service",
     "access: check for the unauthorised API access",
     "schema: API response schema validation"

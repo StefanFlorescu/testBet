@@ -17,8 +17,7 @@ def configure_logging() -> None:
 
     level = getattr(logging, settings.log_level, None)
 
-    if not isinstance(level, int):
-        raise ValueError(f"Invalid LOG_LEVEL: {settings.log_level}")
+    if not isinstance(level, int): raise ValueError(f"Invalid LOG_LEVEL: {settings.log_level}")
 
     root_logger = logging.getLogger()
     root_logger.setLevel(level)
