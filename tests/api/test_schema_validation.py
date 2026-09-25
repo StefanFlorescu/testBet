@@ -8,7 +8,7 @@ from src.logger import get_logger
 from src.config import settings
 
 
-pytestmark = [pytest.mark.api, pytest.mark.schema]
+pytestmark = [pytest.mark.demo]
 logger = get_logger("test_schema")
 schema = schemathesis.openapi.from_url(settings.api_documentation_url.encoded_string())
 

@@ -72,6 +72,7 @@ docs/_build/
 *.sqlite
 *.sqlite3
 *.db
+reports/
 
 # OS metadata
 .DS_Store

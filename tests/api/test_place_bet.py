@@ -40,6 +40,8 @@ invalid_stake_scenarios = [(None, "Stake must be a valid number."),
                            (MAX_STAKE + 1.00, "Stake must be at most 100.00.")
                            ]
 
+invalid_match_ids = [("", 'invalid_match_id', "Match id is invalid."), ("unknown-match-id", 'invalid_match', "Match not found.")]
+
 pytestmark = [pytest.mark.api, pytest.mark.bets]
 
 def test_place_empty_payload_rejected(place_bet) -> None:
@@ -53,17 +55,16 @@ def test_place_empty_payload_rejected(place_bet) -> None:
     check.equal(error_type, "invalid_match_id")
     check.equal(error_message, "Match id is invalid.")
 
-# TODO -> defect match_id is not validated correctly, can use non-existent match_id and the validation error does not flag this
-@pytest.mark.parametrize("match_id", ["", "unknown-match-id"])
-def test_place_bet_rejects_invalid_match_id(place_bet, match_id: str) -> None:
+@pytest.mark.parametrize("match_id, error_type, error_msg", invalid_match_ids)
+def test_place_bet_rejects_invalid_match_id(valid_random_stakes, place_bet, match_id: str, error_type, error_msg) -> None:
     """Verify that blank and unknown match IDs are rejected."""
-    response = place_bet(matchId=match_id)
+    response = place_bet(matchId=match_id, selection=valid_selections(), stake=valid_random_stakes())
     _response_body = response.json()
-    error_type = _response_body.get("error")
-    error_message = _response_body.get("message")
+    _error_type = _response_body.get("error")
+    _error_message = _response_body.get("message")
     check.equal(response.status_code, 422)
-    check.equal(error_type, "invalid_match_id", f"Unexpected error type for match_id={match_id}: {error_type}")
-    check.equal(error_message, "Match id is invalid.", f"Unexpected error message for match_id={match_id}: {error_message}")
+    check.equal(error_type, _error_type, f"Unexpected error type for match_id={match_id}: {error_type}")
+    check.equal(error_msg, _error_message, f"Unexpected error message for match_id={match_id}: {error_msg}")
 
 
 def test_place_bet_rejects_missing_or_invalid_selection(place_bet) -> None:
@@ -81,11 +82,12 @@ def test_place_bet_rejects_missing_stake(place_bet) -> None:
     check.equal(response.status_code, 422)
     check.is_in("Stake must be a valid number.", response.text, f"Expected 'error' in response body for missing stake: {response.text}")
 
-# TODO -> negative values for stake are not validated correctly, the validation error does not flag this
+# TODO -> negative values for stake are not validated, the go throught and transction is accepted!
 @pytest.mark.parametrize("stake, expected_message", invalid_stake_scenarios, ids=[f"stake={s[0]}" for s in invalid_stake_scenarios])
-def test_place_bet_rejects_invalid_stake(place_bet, stake, expected_message: str) -> None:
+def test_place_bet_rejects_invalid_stake(place_bet, get_matches, stake, expected_message: str) -> None:
     """Verify that invalid stake values are rejected."""
-    response = place_bet( matchId='unknown-match-id', selection=valid_selections(), stake=stake)
+    match_id = random.choice(get_matches().json()).get('id')
+    response = place_bet( matchId=match_id, selection=valid_selections(), stake=stake)
     check.equal(response.status_code, 422)
     check.is_in(expected_message, response.text, f"Expected 'error' in response body for stake={stake}: {response.text}")
 
@@ -111,7 +113,7 @@ def test_place_bet_with_exceeding_stake(place_bet, get_balance, get_matches) -> 
     response = place_bet(matchId=match_id, selection=valid_selections(), stake=available_balance + 1 if available_balance else 1)
     check.equal(response.status_code, 422) # Transaction must be rejected as the balance can not cover the stake
 
-# # TODO -> USD are returned in currency field, but the API documentation states that only EUR is supported
+# TODO -> USD are returned in currency field, but the API documentation states that only EUR is supported
 def test_place_bet_with_valid_mandatory_fields(get_matches, reset_balance, place_bet, valid_random_stakes) -> None:
     """Verify that only required fields are needed to place a bet."""
     reset_balance()
@@ -138,7 +140,7 @@ def test_place_bet_with_valid_mandatory_fields(get_matches, reset_balance, place
     check.equal(response_body.get("currency"), 'EUR', f"Expected default currency in response, got: {response_body.get('currency')}")
 
 
-def test_place_bet_extract_stake_from_user_balance(get_matches, reset_balance, get_balance, place_bet, valid_random_stakes) -> None:
+def test_place_bet_extract_stake_from_user_balance(get_matches, reset_balance, get_balance, place_bet) -> None:
     """Verify that the stake once succesfully placed is extracted form the balance"""
     reset_balance()
     matches = get_matches().json()

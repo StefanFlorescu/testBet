@@ -28,6 +28,7 @@ markers = [
     "access: check for the unauthorised API access",
     "schema: API response schema validation",
     "ui: tests that exercise the web application through a browser",
-    "demo: demonstration tests for local UI debugging"
+    "e2e: end-to-end UI scenarios",
+    "demo: for development purposes only, these tests are not meant to be run, they are in development stage only"
 
 ]

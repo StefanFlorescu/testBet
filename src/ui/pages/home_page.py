@@ -21,6 +21,7 @@ class HomePage(AbstractPage):
     _potential_payout = Locator(By.XPATH, '//span[@id="bet-slip-potential-payout"]')
     _place_bet = Locator(By.ID, "bet-slip-place-bet")
     _user_balance = Locator(By.ID, "bet-slip-balance")
+    _success_modal = Locator(By.XPATH, '//div[@id="modal-success" and @role="dialog"]')
 
     def __init__(self, browser: WebDriver) -> None:
         super().__init__(browser)
@@ -80,3 +81,7 @@ class HomePage(AbstractPage):
     def place_bet(self) -> None:
         """Submit the selected bet."""
         self._place_bet.first.click()
+    
+    @property
+    def success_modal_is_visible(self) -> bool:
+        return self._success_modal.first.is_displayed()
