@@ -1,50 +1,20 @@
-Look for the docs/*.pdf files to understand the context of the assignemtn
-BASE_URL of the application: https://qae-assignment-tau.vercel.app/?
-API DOCUMENTATION URL: https://qae-assignment-tau.vercel.app/api/docs
+# TestBet
 
-## Run tests in Docker
+Home Assignement - Test automation project for the sports-betting application "Sports Betting QA" (https://qae-assignment-tau.vercel.app).
 
-Build the test image:
+## Assignment generated artifacts
 
-```bash
-docker build -t testbet-tests .
-```
-
-Run the demo UI tests using the Chromium and display services provided by
-`seleniarm/standalone-chromium`:
-
-```bash
-docker run --rm --env-file .env testbet-tests
-```
-
-The container runs this command by default:
-
-```bash
-LOG_LEVEL=INFO uv run pytest --headed -m demo
-```
-
-The image installs Python 3.14 with `uv`, because the base Selenium image
-provides the browser services but does not provide the Python version required
-by this project.
-
-The default command can be overridden after the image name. For example, run
-tests selected by another marker:
-
-```bash
-docker run --rm --env-file .env testbet-tests \
-  uv run pytest --headed -m api
-
-docker run --rm --env-file .env testbet-tests \
-  uv run pytest --headed -m "ui and not demo"
-```
-
-You can also pass any normal pytest arguments:
-
-```bash
-docker run --rm --env-file .env testbet-tests \
-  uv run pytest --headed tests/ui/test_e2e.py -k place_stake
-```
-
-The entrypoint starts the Selenium services and then executes the command
-supplied after the image name. If no command is supplied, Docker uses the
-default `demo` command from `CMD`.
+- [Feature Specification](docs/Feature_Specification.pdf) — Product
+  requirements and betting-flow behavior used as the basis for test design.
+- [QA Take-Home Assignment](docs/HQA_Take_Home_Task.pdf) — Assignment
+  instructions, required deliverables, technology requirements, and domain
+  context.
+- [Part A — Manual QA Test Plan](docs/part_a_test_plan.md) — Prioritized
+  manual scenarios, execution guidance, and documented the erly exploratory defects intentied.
+- [Part B — Automation](docs/part_b_instructions.md) — Automation framework
+  structure, API and UI test coverage, pytest markers, and local/Docker
+  execution instructions, test output and the indetified API defects idetified.
+  Used "uv" utility in order to manage project dependencies
+- [Part C — Strategy & Recommendations](docs/part_c_strategy.md) — Rationale
+  for the automation choices, manual-only coverage, and recommendations for
+  scaling the test strategy.
